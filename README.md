@@ -1,2 +1,5 @@
 # mailin-notification
-little adurino project for the Digital Prototyping Academy
+
+this is for the time being a place where I keep my code for a project I do together with some others during the 
+Digital Prototyping Academy class "Electronics + App Development". So feel free to look around but dont necessary
+expect to make sense of it or it working. :)
