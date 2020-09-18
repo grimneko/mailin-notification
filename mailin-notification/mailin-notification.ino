@@ -18,7 +18,7 @@ void loop() {
   sensorSTATE = digitalRead(sensorPIN);
 
   // check if the sensor picked up anything
-  if (sensorSTATE = HIGH) {
+  if (sensorSTATE == HIGH) {
     // turn internal led on
     digitalWrite(ledPIN, HIGH);
   } else {
