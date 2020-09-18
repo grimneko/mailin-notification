@@ -11,6 +11,12 @@ void setup() {
   pinMode(ledPIN, OUTPUT);
   // initalize the sensor pin as input
   pinMode(sensorPIN, INPUT);
+  // initialise serial monitor for debugging with 9600 baud
+  Serial.begin(9600);
+  // send an initial display text to the serial console to show we started
+  Serial.println(" --- Serial Monitor started ---");
+  Serial.println(" ------------------------------");
+  Serial.println();
 }
 
 void loop() {
@@ -21,9 +27,13 @@ void loop() {
   if (sensorSTATE == HIGH) {
     // turn internal led on
     digitalWrite(ledPIN, HIGH);
+    // send status message to the serial monitor
+    Serial.println(" Button is pushed, pin 13 LED is HIGH (on)");
   } else {
     // turn internal led off
     digitalWrite(ledPIN, LOW);
+    // send status message to the serial monitor
+    Serial.println(" Button is not pushed, pin 13 LED is LOW (off)");
   }
 // return to the beginning
 }
