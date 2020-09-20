@@ -33,3 +33,11 @@
 
 # Mac DS Store Files
 .DS_Store
+
+# pictures
+*.png
+*.PNG
+*.jpg
+*.JPEG
+*.jpeg
+*.JPG
