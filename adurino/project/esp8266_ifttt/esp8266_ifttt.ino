@@ -7,7 +7,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include "AnotherIFTTTWebhook.h"
-#include "wlanpassword.h"
+#include "secrets.h"
 
  
 void setup() {
@@ -33,7 +33,7 @@ void setup() {
     Serial.println("Going back to DeepSleep");
     ESP.deepSleep(0);
   }
-  send_webhook("esp8266_mailin","b4vBY4ZHMzfqrPn7l-NOan","","","");
+  send_webhook(eventname,apikey,"","","");
   Serial.println(" Wifi connection established successful");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
