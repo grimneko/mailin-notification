@@ -1,3 +1,6 @@
 [submodule "Fritzing/Parts/NodeMCU-part"]
 	path = Fritzing/Parts/NodeMCU-part
 	url = https://github.com/OgreTransporter/fritzing-parts-extra
+[submodule "adurino/libs/AnotherIFTTTWebhook"]
+	path = adurino/libs/AnotherIFTTTWebhook
+	url = https://github.com/Siytek/AnotherIFTTTWebhook
