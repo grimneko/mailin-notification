@@ -43,4 +43,4 @@
 *.JPG
 
 # exclude wlanpassword.h to not share data with public
-wlanpassword.h
+**/secrets.h
