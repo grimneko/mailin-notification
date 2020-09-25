@@ -4,3 +4,6 @@
 [submodule "adurino/libs/AnotherIFTTTWebhook"]
 	path = adurino/libs/AnotherIFTTTWebhook
 	url = https://github.com/Siytek/AnotherIFTTTWebhook
+[submodule "adurino/libs/rtcvars"]
+	path = adurino/libs/rtcvars
+	url = https://github.com/highno/rtcvars.git
