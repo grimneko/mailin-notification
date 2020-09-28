@@ -19,13 +19,14 @@ int mailmarker;
 // set constant for GPIO 14 (D 5) where we look for our mail trigger
 const short int pinD5 = 14;
 
-// define contstant for sleep duration of the ESP between the cycles
+// define contstant in μs for sleep duration of the ESP between the cycles
 const unsigned int espsleeplength = 10e6;
  
 void setup() {
   Serial.begin(115200); // establish serial connection for debugging
   Serial.setTimeout(2000);
-
+  Serial.println();
+  
   // Register our marker variable with RTCVars
   state.registerVar(&mailmarker);
 
@@ -41,22 +42,25 @@ void setup() {
 
   if (digitalRead(pinD5) == LOW) { // lets see if our sensor says we got mail
     if (mailmarker == 0) { // so the sensor is triggered but marker says we did send a notification already
-      Serial.println("Sensor is triggered, but mailmarker says we send already a note, sleep time again for " + String(espsleeplength) + " miliseconds");
+      Serial.println("Sensor is triggered, but mailmarker says we send already a note, sleep time again for " + String(espsleeplength) + " μs (microseconds)");
       ESP.deepSleep(espsleeplength); // sleep again for duration definied in espsleeplength and look again
+      delay(100);
     } else { 
       mailmarker = 0; // we got mail but no notification yet ? cool, lets go by setting our marker
       state.saveToRTC(); // and save the new state so it survive the deepSleep()
-      Serial.println("Sensor is triggered, the marker says we didnt notified already, so let set the marker, save it and fire a notification");
+      Serial.println("Sensor is triggered, the marker says we didnt notified already, set the marker, save it and fire a notification");
     }
   } else {
     if (mailmarker == 0) { // check if our trigger is still set
       mailmarker = 1; // sensor is not triggered anymore ? reset the marker, ...
       state.saveToRTC(); // save it to the RTC, ...
-      Serial.println("Sensor is not triggered anymore, reset the marker, save the marker and go to deepsleep for " + String(espsleeplength) + " miliseconds again");
+      Serial.println("Sensor is not triggered anymore, reset the marker, save the marker and go to deepsleep for " + String(espsleeplength) + " μs (microseconds) again");
       ESP.deepSleep(espsleeplength); // and go back to sleep for the duration definied in espsleeplength until we give it another look
+      delay(100);
     } else { // otherwise just sleep again
-      Serial.println("Sensor is not triggered, marker is not set, lets wait " + String(espsleeplength) +" miliseconds if it gets triggered again");
+      Serial.println("Sensor is not triggered, marker is not set, wait " + String(espsleeplength) +" μs (microseconds) if it gets triggered again");
       ESP.deepSleep(espsleeplength); // since everything is in waiting position, lets go to sleep for another cycle
+      delay(100);
     }
   }
 
@@ -67,19 +71,20 @@ void setup() {
   WiFi.persistent(false); // for now dont save wifi data into flash to minimize flash memory overwrites
   
   int i = 0; // set connections attempt counter to 0
-  while ((i < 2) && (WiFi.status() != WL_CONNECTED)) { // loop until we reached 3 attempts or WiFi.status() indicate we are connected
-    WiFi.begin(ssid, password); // start the connection attempt to user provided wireless lan
+  WiFi.begin(ssid, password); // start the connection attempt to user provided wireless lan
+  while ((i < 10) && (WiFi.status() != WL_CONNECTED)) { // loop until we reached 3 attempts or WiFi.status() indicate we are connected 
     Serial.print("Attempt ");
     Serial.print(i);
     Serial.print(" to connect to wifi network with SSID: ");
     Serial.println(ssid);
-    delay(10000); // wait 10 sec to allow the esp to connect sucessful
+    delay(500); // wait 10 sec to allow the esp to connect sucessful
     i++; // increment our attempt counter
   }
   if (WiFi.status() != WL_CONNECTED) { // check if wifi is connected and react
-    Serial.println(" Couldn't establish WiFi connection after 3 attempts"); // we couldn't connect, thus just go back to sleep (to wake up again we reset anyway, ram gets cleaned)
+    Serial.println(" Couldn't establish WiFi connection after 5 sec"); // we couldn't connect, thus just go back to sleep (to wake up again we reset anyway, ram gets cleaned)
     Serial.println("Going back to DeepSleep");
     ESP.deepSleep(espsleeplength);
+    delay(100);
   }
   
   Serial.println(" Wifi connection established successful"); // we are connected (and probably in the internet)
@@ -90,6 +95,7 @@ void setup() {
   Serial.println(" Disconnecting and going back to deep sleep");
   WiFi.disconnect(); // we did send the event, now its time to sleep deep again thus disconnect ...
   ESP.deepSleep(espsleeplength); // and go back to sleep
+  delay(100);
 }
 
 void loop() {
