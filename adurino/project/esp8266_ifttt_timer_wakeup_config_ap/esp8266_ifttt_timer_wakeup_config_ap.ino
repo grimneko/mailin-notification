@@ -5,14 +5,12 @@
  */
 
 #include <ESP8266WiFi.h>
-//#include <WiFiClient.h>
-//#include <WiFiServer.h>
-// #include <ESP8266mDNS.h>
 #include <ESP8266WebServer.h>
 #include "AnotherIFTTTWebhook.h"
 #include "secrets.h"
 #include "RTCVars.h"
 #include <Ticker.h>
+#include <LittleFS.h>
 
 /*
  * -------------- Variables, objects and constant section --------------  
@@ -63,7 +61,8 @@ void blinkLedSetup()
 
 void handleRoot() // handle the webrequests
 {
-  setupweb.send(200, "text/html", "<form action=\"/ENDSETUP\" method=\"POST\"><input type=\"submit\" value=\"End setup mode\"></form>");
+  // setupweb.send(200, "text/html", "<form action=\"/ENDSETUP\" method=\"POST\"><input type=\"submit\" value=\"End setup mode\"></form>");
+
 }
 
 void endSetup() // end setup mode and restart the esp
@@ -87,6 +86,13 @@ void setup() {
 
   if (digitalRead(pinD6) == LOW) { // check if the user is pushing the setup button 
     // we enter setup mode
+    if (!LittleFS.begin()){ // check if we can load our flash fs properly
+      Serial.println("Error initializing flash fs, going back to sleep");
+      ESP.deepSleep(espsleeplength);
+      delay(100);
+    } else {
+      Serial.println("Flash FS successful mounted");
+    }
     Serial.println("Entering Setup mode...");
     pinMode(boardLED,OUTPUT); // setup the on-board LED for blinking
     ledBlink.attach(0.5, blinkLedSetup); // initalize ticker to call our blink routine every 0.5s
@@ -95,8 +101,9 @@ void setup() {
     WiFi.softAP(setup_ssid, setup_password); // start our setup ap
     Serial.print("Connect to ");
     Serial.println(WiFi.softAPIP());
-    setupweb.on("/", handleRoot);
-    setupweb.on("/ENDSETUP", endSetup);
+    setupweb.serveStatic("/", LittleFS,"/index.html");
+    //setupweb.on("/", handleRoot);
+    //setupweb.on("/ENDSETUP", endSetup);
     setupweb.begin();
     Serial.println("Setup webpage started");
     return; // end the setup() routine early and hop over to loop() where we deal with the setup 
@@ -175,4 +182,5 @@ void setup() {
 
 void loop() {
   setupweb.handleClient();
+  yield();
 }
