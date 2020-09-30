@@ -3,7 +3,7 @@
 	url = https://github.com/OgreTransporter/fritzing-parts-extra
 [submodule "adurino/libs/AnotherIFTTTWebhook"]
 	path = adurino/libs/AnotherIFTTTWebhook
-	url = https://github.com/Siytek/AnotherIFTTTWebhook
+	url = https://github.com/grimneko/AnotherIFTTTWebhook.git
 [submodule "adurino/libs/rtcvars"]
 	path = adurino/libs/rtcvars
 	url = https://github.com/highno/rtcvars.git

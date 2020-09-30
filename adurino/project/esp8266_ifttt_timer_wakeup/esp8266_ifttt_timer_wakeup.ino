@@ -130,7 +130,15 @@ void setup() {
   Serial.println("Trying to send the notification");
 #endif
 
-  send_webhook(eventname,apikey,"","",""); // here is the magic happening, we notify ifttt we got an event (aka the mailbox got probably filled with something)
+  if (!send_webhook(eventname,apikey,"","","")) { // here is the magic happening, we notify ifttt we got an event (aka the mailbox got probably filled with something)
+    mailmarker = 1; // send_webhook did gave back an error, so we reset the marker so next wake up we try to send another notification
+    state.saveToRTC(); // save our marker in the RTC ram
+
+#ifdef SERIAL_DEBUG
+    Serial.println("Encountered error while sending notification to IFTTT, will try again when the next wake up happens and the trigger is still going!");
+#endif
+
+  }
 
 #ifdef SERIAL_DEBUG
   Serial.println(" Disconnecting and going back to deep sleep");
